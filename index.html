@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karthick Raja | Payroll & HR Specialist</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Raleway:wght@300;400;500;600&family=Orbitron:wght@400;700&display=swap');
+
+  :root {
+    --gold: #C9A84C;
+    --gold-bright: #FFD700;
+    --gold-dim: #8B6914;
+    --dark: #050505;
+    --dark2: #0D0D0D;
+    --dark3: #111111;
+    --white: #F0EDE6;
+    --muted: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--dark); color: var(--white); font-family: "Raleway", sans-serif; overflow-x: hidden; }
+
+  #datetime-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 2000;
+    background: linear-gradient(90deg, #000 0%, #1a1200 50%, #000 100%);
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    display: flex; justify-content: center; align-items: center; gap: 20px;
+    padding: 6px 20px; font-family: "Orbitron", monospace;
+    font-size: 0.65rem; letter-spacing: 2px; color: var(--gold);
+  }
+  #datetime-bar .dt-separator { color: var(--gold-dim); opacity: 0.5; }
+
+  #particles-canvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; opacity: 0.4;
+  }
+
+  #cursorGlow {
+    position: fixed; width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none; z-index: 1; transform: translate(-50%, -50%);
+    transition: left 0.1s, top 0.1s;
+  }
+
+  #progressBar {
+    position: fixed; top: 33px; left: 0; height: 2px;
+    background: linear-gradient(to right, var(--gold-dim), var(--gold), var(--gold-bright));
+    z-index: 1999; transition: width 0.1s; width: 0%;
+  }
+
+  nav {
+    position: fixed; top: 33px; left: 0; right: 0; z-index: 1000;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 60px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+  }
+  .nav-logo { font-family: "Cinzel", serif; font-size: 1.1rem; color: var(--gold); letter-spacing: 4px; }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--gold); }
+
+  section { position: relative; z-index: 1; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 60px 100px; }
+
+  #hero { flex-direction: column; text-align: center; overflow: hidden; }
+  .hero-bg-glow {
+    position: absolute; width: 700px; height: 700px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    animation: breathe 4s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+  }
+
+  .avatar-wrap {
+    position: relative; width: 160px; height: 160px;
+    margin: 0 auto 30px; opacity: 0;
+    animation: fadeUp 1s ease 0.2s forwards;
+  }
+  .avatar-wrap img {
+    width: 160px; height: 160px; border-radius: 50%; object-fit: cover;
+    border: 3px solid var(--gold);
+    box-shadow: 0 0 30px rgba(201,168,76,0.4), 0 0 60px rgba(201,168,76,0.15);
+  }
+  .avatar-ring {
+    position: absolute; inset: -8px; border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.3);
+    animation: spin 12s linear infinite;
+  }
+  .avatar-ring::before {
+    content: ""; position: absolute; top: -3px; left: 50%;
+    width: 6px; height: 6px; background: var(--gold); border-radius: 50%;
+    transform: translateX(-50%); box-shadow: 0 0 10px var(--gold);
+  }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .hero-eyebrow { font-size: 0.7rem; letter-spacing: 8px; color: var(--gold); text-transform: uppercase; opacity: 0; animation: fadeUp 1s ease 0.4s forwards; }
+  .hero-name { font-family: "Cinzel", serif; font-size: clamp(3rem, 9vw, 8rem); font-weight: 900; line-height: 1; margin: 20px 0 10px; opacity: 0; animation: fadeUp 1s ease 0.7s forwards; }
+  .hero-name .first { color: var(--white); }
+  .hero-name .last { color: var(--gold); display: block; text-shadow: 0 0 60px rgba(201,168,76,0.5); }
+  .hero-title { font-size: 0.85rem; letter-spacing: 6px; color: var(--muted); text-transform: uppercase; margin-bottom: 30px; opacity: 0; animation: fadeUp 1s ease 1s forwards; }
+
+  .hero-stats { display: flex; gap: 60px; justify-content: center; margin: 40px 0; opacity: 0; animation: fadeUp 1s ease 1.3s forwards; }
+  .stat-item { text-align: center; }
+  .stat-number { font-family: "Orbitron", monospace; font-size: 2.5rem; color: var(--gold); font-weight: 700; }
+  .stat-label { font-size: 0.65rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-top: 6px; }
+  .hero-divider { width: 200px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 20px auto; opacity: 0; animation: fadeIn 1s ease 1.6s forwards; }
+
+  .hero-ctas { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; opacity: 0; animation: fadeUp 1s ease 1.8s forwards; margin-top: 20px; }
+  .btn-gold {
+    display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px;
+    border: 1px solid var(--gold); color: var(--gold); background: transparent;
+    font-family: "Raleway", sans-serif; font-size: 0.72rem; letter-spacing: 3px;
+    text-transform: uppercase; text-decoration: none; cursor: pointer;
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .btn-gold::before {
+    content: ""; position: absolute; inset: 0; background: var(--gold);
+    transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; z-index: -1;
+  }
+  .btn-gold:hover::before { transform: scaleX(1); }
+  .btn-gold:hover { color: #000; }
+  .btn-solid { background: var(--gold); color: #000; }
+  .btn-solid:hover { background: var(--gold-bright); border-color: var(--gold-bright); color: #000; }
+  .btn-solid::before { display: none; }
+
+  .hero-scroll {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0; animation: fadeIn 1s ease 2.2s forwards;
+  }
+  .scroll-text { font-size: 0.6rem; letter-spacing: 4px; color: var(--gold-dim); text-transform: uppercase; }
+  .scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--gold), transparent); animation: scrollPulse 1.5s ease-in-out infinite; }
+  @keyframes scrollPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  #mini-avatar {
+    position: fixed; right: 30px; bottom: 40px; z-index: 500; width: 70px;
+    transition: bottom 0.05s linear; pointer-events: none;
+    filter: drop-shadow(0 4px 12px rgba(201,168,76,0.5));
+  }
+  #mini-avatar img {
+    width: 70px; height: 70px; border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--gold); box-shadow: 0 0 15px rgba(201,168,76,0.6);
+  }
+  .mini-avatar-body { display: flex; flex-direction: column; align-items: center; }
+  .mini-avatar-feet { display: flex; gap: 8px; margin-top: 4px; }
+  .foot { width: 10px; height: 14px; background: var(--gold); border-radius: 4px 4px 6px 6px; transform-origin: top center; }
+  .foot-left { animation: walkLeft 0.4s ease-in-out infinite; }
+  .foot-right { animation: walkRight 0.4s ease-in-out infinite; }
+  @keyframes walkLeft { 0%, 100% { transform: rotate(-20deg) translateY(0); } 50% { transform: rotate(20deg) translateY(-4px); } }
+  @keyframes walkRight { 0%, 100% { transform: rotate(20deg) translateY(-4px); } 50% { transform: rotate(-20deg) translateY(0); } }
+  .mini-avatar-shadow { width: 50px; height: 8px; background: rgba(201,168,76,0.25); border-radius: 50%; margin-top: 2px; animation: shadowPulse 0.4s ease-in-out infinite; }
+  @keyframes shadowPulse { 0%, 100% { transform: scaleX(1); opacity: 0.5; } 50% { transform: scaleX(0.8); opacity: 0.3; } }
+  #mini-avatar.paused .foot-left, #mini-avatar.paused .foot-right { animation-play-state: paused; }
+
+  .section-label { font-size: 0.65rem; letter-spacing: 6px; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; }
+  .section-title { font-family: "Cinzel", serif; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; line-height: 1.1; margin-bottom: 24px; }
+  .gold-line { width: 60px; height: 2px; background: var(--gold); margin-bottom: 40px; }
+
+  #about .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1100px; width: 100%; }
+  .about-text p { color: #aaa; line-height: 1.9; font-size: 1rem; margin-bottom: 20px; }
+  .about-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .tag { padding: 6px 16px; border: 1px solid rgba(201,168,76,0.3); font-size: 0.72rem; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; }
+  .about-portrait { position: relative; display: flex; align-items: center; justify-content: center; }
+  .portrait-frame { position: relative; width: 320px; height: 320px; }
+  .portrait-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid rgba(201,168,76,0.4); box-shadow: 0 0 60px rgba(201,168,76,0.2); }
+  .portrait-corner { position: absolute; width: 30px; height: 30px; border-color: var(--gold); border-style: solid; opacity: 0.6; }
+  .portrait-corner.tl { top: -10px; left: -10px; border-width: 2px 0 0 2px; }
+  .portrait-corner.tr { top: -10px; right: -10px; border-width: 2px 2px 0 0; }
+  .portrait-corner.bl { bottom: -10px; left: -10px; border-width: 0 0 2px 2px; }
+  .portrait-corner.br { bottom: -10px; right: -10px; border-width: 0 2px 2px 0; }
+
+  .reveal, .reveal-left, .reveal-right { opacity: 0; transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal { transform: translateY(40px); }
+  .reveal-left { transform: translateX(-50px); }
+  .reveal-right { transform: translateX(50px); }
+  .reveal.visible, .reveal-left.visible, .reveal-right.visible { opacity: 1; transform: none; }
+  .delay-1 { transition-delay: 0.1s; }
+  .delay-2 { transition-delay: 0.2s; }
+  .delay-3 { transition-delay: 0.3s; }
+  .delay-4 { transition-delay: 0.4s; }
+
+  #experience .exp-wrap { max-width: 1000px; width: 100%; }
+  .exp-header { border-left: 3px solid var(--gold); padding-left: 24px; margin-bottom: 40px; }
+  .exp-company { font-family: "Cinzel", serif; font-size: 1.4rem; color: var(--gold); margin-bottom: 6px; }
+  .exp-role { font-size: 1rem; color: var(--white); margin-bottom: 4px; }
+  .exp-period { font-size: 0.72rem; letter-spacing: 2px; color: var(--muted); }
+  .exp-sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .exp-sub-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(201,168,76,0.1); padding: 24px; transition: border-color 0.3s; }
+  .exp-sub-card:hover { border-color: rgba(201,168,76,0.4); }
+  .exp-sub-title { font-size: 0.72rem; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 14px; }
+  .exp-bullets { list-style: none; }
+  .exp-bullets li { color: #aaa; font-size: 0.88rem; line-height: 1.7; padding-left: 16px; position: relative; margin-bottom: 6px; }
+  .exp-bullets li::before { content: "—"; position: absolute; left: 0; color: var(--gold-dim); font-size: 0.75rem; }
+
+  .ach-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+  .ach-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(201,168,76,0.1); padding: 36px 24px; text-align: center; transition: all 0.3s; }
+  .ach-card:hover { border-color: var(--gold); transform: translateY(-6px); box-shadow: 0 20px 40px rgba(201,168,76,0.1); }
+  .ach-icon { font-size: 2rem; display: block; margin-bottom: 16px; }
+  .ach-number { font-family: "Orbitron", monospace; font-size: 2.5rem; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+  .ach-title { font-size: 0.8rem; letter-spacing: 2px; color: var(--white); text-transform: uppercase; margin-bottom: 12px; }
+  .ach-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+  .tools-list-grid { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 30px; }
+  .tool-chip { display: flex; align-items: center; gap: 10px; padding: 12px 22px; border: 1px solid rgba(201,168,76,0.2); font-size: 0.82rem; color: #ccc; letter-spacing: 1px; transition: all 0.3s; }
+  .tool-chip:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.05); }
+  .t-icon { font-size: 1rem; }
+
+  .edu-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(201,168,76,0.15); padding: 40px; margin-bottom: 30px; }
+  .edu-degree { font-family: "Cinzel", serif; font-size: 1.3rem; color: var(--gold); margin-bottom: 10px; }
+  .edu-institution { font-size: 0.9rem; color: #aaa; margin-bottom: 6px; }
+  .edu-year { font-size: 0.75rem; letter-spacing: 2px; color: var(--muted); }
+  .lang-row { display: flex; gap: 16px; justify-content: center; margin-top: 20px; }
+  .lang-pill { padding: 8px 28px; border: 1px solid rgba(201,168,76,0.3); font-size: 0.8rem; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; }
+
+  .contact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 700px; margin: 0 auto 50px; }
+  .contact-item { display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.02); border: 1px solid rgba(201,168,76,0.1); padding: 24px 28px; text-decoration: none; color: inherit; transition: all 0.3s; }
+  .contact-item:hover { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+  .contact-icon { font-size: 1.5rem; }
+  .contact-detail-label { font-size: 0.65rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+  .contact-detail-value { font-size: 0.9rem; color: var(--white); }
+  .tagline-row { display: flex; gap: 20px; align-items: center; margin-top: 40px; flex-wrap: wrap; }
+  .tagline-word { font-family: "Cinzel", serif; font-size: 0.9rem; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; }
+  .tagline-dot { color: var(--gold); font-size: 1.2rem; }
+  .signature { font-family: "Cinzel", serif; font-size: 2.5rem; color: var(--gold); opacity: 0.15; margin-top: 60px; letter-spacing: 8px; }
+  .linkedin-icon { width: 20px; height: 20px; fill: currentColor; }
+</style>
+</head>
+<body>
+
+<div id="datetime-bar">
+  <span id="dt-date"></span>
+  <span class="dt-separator">|</span>
+  <span id="dt-time"></span>
+  <span class="dt-separator">|</span>
+  <span id="dt-day"></span>
+</div>
+
+<div id="progressBar"></div>
+<div id="cursorGlow"></div>
+<canvas id="particles-canvas"></canvas>
+
+<nav>
+  <div class="nav-logo">KR</div>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#achievements">Achievements</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div id="mini-avatar">
+  <div class="mini-avatar-body">
+    <img src="avatar_png.png" alt="Karthick Raja">
+    <div class="mini-avatar-feet">
+      <div class="foot foot-left"></div>
+      <div class="foot foot-right"></div>
+    </div>
+  </div>
+  <div class="mini-avatar-shadow"></div>
+</div>
+
+<section id="hero">
+  <div class="hero-bg-glow"></div>
+  <div class="avatar-wrap">
+    <img src="avatar_png.png" alt="Karthick Raja">
+    <div class="avatar-ring"></div>
+  </div>
+  <div class="hero-eyebrow">Payroll &amp; HR Shared Services Specialist</div>
+  <h1 class="hero-name">
+    <span class="first">Karthick</span>
+    <span class="last">Raja</span>
+  </h1>
+  <div class="hero-title">Oracle HCM &middot; UK &amp; Ireland Payroll &middot; 8+ Years Experience</div>
+  <div class="hero-divider"></div>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-number" data-count="8">0</div><div class="stat-label">Years Experience</div></div>
+    <div class="stat-item"><div class="stat-number" data-count="1000">0</div><div class="stat-label">Employees Supported</div></div>
+    <div class="stat-item"><div class="stat-number" data-count="100">0</div><div class="stat-label">SLA Compliance</div></div>
+    <div class="stat-item"><div class="stat-number" data-count="5">0</div><div class="stat-label">Countries Covered</div></div>
+  </div>
+  <div class="hero-ctas">
+    <a href="https://www.linkedin.com/in/karthick-raja-514965100" target="_blank" class="btn-gold">
+      <svg class="linkedin-icon" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      LinkedIn Profile
+    </a>
+    <a href="#" id="download-resume" class="btn-gold btn-solid">&#11015; Download Resume</a>
+  </div>
+  <div class="hero-scroll">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about-grid">
+    <div class="about-text reveal-left">
+      <div class="section-label">Professional Summary</div>
+      <h2 class="section-title">About <span style="color:var(--gold)">Me</span></h2>
+      <div class="gold-line"></div>
+      <p>Results-driven Payroll and HR Shared Services (HRSS) Specialist with 8+ years of experience supporting UK &amp; Ireland payroll operations, Oracle HCM administration, Time &amp; Labour management, employee lifecycle processes, and global HR support.</p>
+      <p>Proven track record of maintaining 100% SLA compliance while delivering accurate payroll, compliance, reporting, and employee support services across multiple geographies.</p>
+      <div class="about-tags">
+        <span class="tag">UK &amp; Ireland Payroll</span>
+        <span class="tag">Oracle HCM</span>
+        <span class="tag">Time &amp; Labour</span>
+        <span class="tag">HR Shared Services</span>
+        <span class="tag">Compliance &amp; Audit</span>
+        <span class="tag">Global HR</span>
+      </div>
+    </div>
+    <div class="about-portrait reveal-right">
+      <div class="portrait-frame">
+        <img src="avatar_png.png" alt="Karthick Raja">
+        <div class="portrait-corner tl"></div>
+        <div class="portrait-corner tr"></div>
+        <div class="portrait-corner bl"></div>
+        <div class="portrait-corner br"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="exp-wrap">
+    <div style="text-align:center;margin-bottom:60px;" class="reveal">
+      <div class="section-label">Career</div>
+      <h2 class="section-title">Professional <span style="color:var(--gold)">Experience</span></h2>
+      <div class="gold-line" style="margin:0 auto 20px;"></div>
+    </div>
+    <div class="exp-header reveal">
+      <div class="exp-company">Cognizant Technology Solutions</div>
+      <div class="exp-role">Payroll Specialist &ndash; HR Shared Services (HRSS)</div>
+      <div class="exp-period">Coimbatore, India &nbsp;&middot;&nbsp; July 2017 &ndash; Present</div>
+    </div>
+    <div class="exp-sub-grid">
+      <div class="exp-sub-card reveal delay-1">
+        <div class="exp-sub-title">&#128176; Payroll &amp; Settlements</div>
+        <ul class="exp-bullets">
+          <li>UK &amp; Ireland payroll for 1,000+ employees with 100% accuracy and statutory compliance</li>
+          <li>Termination and final settlement processing per regional policies</li>
+          <li>Salary advances, travel advances, and relocation allowances for international employees</li>
+          <li>Pay group validations prior to each payroll cycle</li>
+          <li>Overtime payments for TUPE associates per approved compensation terms</li>
+          <li>Notice period recovery or payout calculations based on business unit approvals</li>
+        </ul>
+      </div>
+      <div class="exp-sub-card reveal delay-2">
+        <div class="exp-sub-title">&#9201; Time &amp; Labour / HCM Timesheet</div>
+        <ul class="exp-bullets">
+          <li>T&amp;L activities in Oracle HCM: timesheet review, validation, and absence processing</li>
+          <li>Overtime inputs, corrections, and absence transactions for UK, IRL, Philippines, Poland &amp; Germany</li>
+          <li>HCM enrollment counts and employee query resolution for absences and leave</li>
+          <li>Monthly leave accrual processes across multiple countries</li>
+          <li>Onboarding new projects into the Time &amp; Labour system</li>
+        </ul>
+      </div>
+      <div class="exp-sub-card reveal delay-3">
+        <div class="exp-sub-title">&#128203; Assignment &amp; Contract Admin</div>
+        <ul class="exp-bullets">
+          <li>Global associate assignments: leave entitlements, pay groups, contracts, and allowances</li>
+          <li>TUPE associate data management and HR/payroll activities</li>
+          <li>Review offer and joining letters; validate compensation against system records</li>
+          <li>Special allowance configurations and payment setups per business requirements</li>
+        </ul>
+      </div>
+      <div class="exp-sub-card reveal delay-4">
+        <div class="exp-sub-title">&#127758; Compliance, Reporting &amp; UAT</div>
+        <ul class="exp-bullets">
+          <li>System testing (UAT) and sign-off on Oracle HCM rules and configuration updates</li>
+          <li>Payroll and HR reports for regional teams supporting audits and compliance reviews</li>
+          <li>SOPs for payroll, T&amp;L, and HR processes across multiple countries</li>
+          <li>Knowledge transfer and cross-training for new countries and processes</li>
+          <li>M&amp;A-related HR and payroll query resolution</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="achievements">
+  <div style="max-width:1000px;width:100%;">
+    <div style="text-align:center;" class="reveal">
+      <div class="section-label">Milestones</div>
+      <h2 class="section-title">Key <span style="color:var(--gold)">Achievements</span></h2>
+      <div class="gold-line" style="margin:0 auto 20px;"></div>
+    </div>
+    <div class="ach-grid">
+      <div class="ach-card reveal delay-1">
+        <span class="ach-icon">&#127942;</span>
+        <div class="ach-number">100%</div>
+        <div class="ach-title">SLA Compliance</div>
+        <div class="ach-desc">Maintained 100% SLA compliance across all UK &amp; Ireland payroll processing cycles over 8+ years.</div>
+      </div>
+      <div class="ach-card reveal delay-2">
+        <span class="ach-icon">&#127919;</span>
+        <div class="ach-number">Zero</div>
+        <div class="ach-title">Post Go-Live Errors</div>
+        <div class="ach-desc">Supported Oracle HCM rule implementation through rigorous UAT with zero post go-live payroll errors.</div>
+      </div>
+      <div class="ach-card reveal delay-3">
+        <span class="ach-icon">&#9889;</span>
+        <div class="ach-number">&#8593;</div>
+        <div class="ach-title">Processing Accuracy</div>
+        <div class="ach-desc">Enhanced overtime processing accuracy by refining manual tracking and aligning with HCM workflows.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tools">
+  <div style="max-width:1000px;width:100%;text-align:center;">
+    <div class="reveal">
+      <div class="section-label">Tech Stack</div>
+      <h2 class="section-title">Tools &amp; <span style="color:var(--gold)">Systems</span></h2>
+      <div class="gold-line" style="margin:0 auto 20px;"></div>
+    </div>
+    <div class="tools-list-grid reveal">
+      <div class="tool-chip"><span class="t-icon">&#128452;</span>Oracle HCM</div>
+      <div class="tool-chip"><span class="t-icon">&#9201;</span>Oracle Time &amp; Labour</div>
+      <div class="tool-chip"><span class="t-icon">&#127903;</span>ServiceNow</div>
+      <div class="tool-chip"><span class="t-icon">&#128202;</span>Microsoft Excel</div>
+      <div class="tool-chip"><span class="t-icon">&#128188;</span>Microsoft Office Suite</div>
+      <div class="tool-chip"><span class="t-icon">&#128200;</span>Payroll Reporting &amp; Analytics</div>
+      <div class="tool-chip"><span class="t-icon">&#127758;</span>HR Shared Services Operations</div>
+      <div class="tool-chip"><span class="t-icon">&#129514;</span>System Testing &amp; UAT</div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div style="max-width:800px;width:100%;text-align:center;">
+    <div class="reveal">
+      <div class="section-label">Academic Background</div>
+      <h2 class="section-title">Education &amp; <span style="color:var(--gold)">Languages</span></h2>
+      <div class="gold-line" style="margin:0 auto 20px;"></div>
+    </div>
+    <div class="edu-card reveal">
+      <div class="edu-degree">Bachelor of Computer Applications (BCA)</div>
+      <div class="edu-institution">Hindustan College of Arts and Science &middot; Coimbatore</div>
+      <div class="edu-year">Graduated: 2015</div>
+    </div>
+    <div class="lang-row reveal">
+      <div class="lang-pill">English</div>
+      <div class="lang-pill">Tamil</div>
+    </div>
+    <div style="margin-top:30px;color:var(--muted);font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;" class="reveal">
+      Location: Tirupur, Tamil Nadu, India
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div style="max-width:1000px;width:100%;text-align:center;">
+    <div class="reveal">
+      <div class="section-label">Get In Touch</div>
+      <h2 class="section-title">Let's <span style="color:var(--gold)">Connect</span></h2>
+      <div class="gold-line" style="margin:0 auto 40px;"></div>
+    </div>
+    <div class="contact-grid">
+      <a class="contact-item reveal delay-1" href="tel:+919524996721">
+        <div class="contact-icon">&#128222;</div>
+        <div><div class="contact-detail-label">Phone</div><div class="contact-detail-value">+91 95249 96721</div></div>
+      </a>
+      <a class="contact-item reveal delay-2" href="mailto:karthikraja569@gmail.com">
+        <div class="contact-icon">&#9993;&#65039;</div>
+        <div><div class="contact-detail-label">Email</div><div class="contact-detail-value">karthikraja569@gmail.com</div></div>
+      </a>
+      <a class="contact-item reveal delay-3" href="https://www.linkedin.com/in/karthick-raja-514965100" target="_blank">
+        <div class="contact-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="#0a66c2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </div>
+        <div><div class="contact-detail-label">LinkedIn</div><div class="contact-detail-value">karthick-raja-514965100</div></div>
+      </a>
+      <div class="contact-item reveal delay-4">
+        <div class="contact-icon">&#128205;</div>
+        <div><div class="contact-detail-label">Location</div><div class="contact-detail-value">Tirupur, Tamil Nadu, India</div></div>
+      </div>
+    </div>
+    <div class="tagline-row" style="justify-content:center;">
+      <span class="tagline-word">Dedicated</span><span class="tagline-dot">&middot;</span>
+      <span class="tagline-word">Accurate</span><span class="tagline-dot">&middot;</span>
+      <span class="tagline-word">Compliant</span><span class="tagline-dot">&middot;</span>
+      <span class="tagline-word">Driven</span>
+    </div>
+    <div class="signature reveal">Karthick Raja</div>
+  </div>
+</section>
+
+<script>
+function updateDateTime() {
+  const now = new Date();
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  document.getElementById("dt-date").textContent = now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear();
+  let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  document.getElementById("dt-time").textContent = String(h).padStart(2,"0") + ":" + String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0") + " " + ampm;
+  document.getElementById("dt-day").textContent = days[now.getDay()];
+}
+updateDateTime();
+setInterval(updateDateTime, 1000);
+
+const canvas = document.getElementById("particles-canvas");
+const ctx = canvas.getContext("2d");
+let particles = [];
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize();
+window.addEventListener("resize", resize);
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 1.5 + 0.3; this.speedX = (Math.random() - 0.5) * 0.3;
+    this.speedY = (Math.random() - 0.5) * 0.3; this.opacity = Math.random() * 0.6 + 0.1;
+    this.color = Math.random() > 0.5 ? "#C9A84C" : "#ffffff";
+  }
+  update() {
+    this.x += this.speedX; this.y += this.speedY;
+    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+  }
+  draw() {
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.color; ctx.globalAlpha = this.opacity; ctx.fill(); ctx.globalAlpha = 1;
+  }
+}
+for (let i = 0; i < 120; i++) particles.push(new Particle());
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 100) {
+        ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = "rgba(201,168,76," + (0.05 * (1 - dist/100)) + ")"; ctx.lineWidth = 0.5; ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+const cursorGlow = document.getElementById("cursorGlow");
+document.addEventListener("mousemove", function(e) { cursorGlow.style.left = e.clientX + "px"; cursorGlow.style.top = e.clientY + "px"; });
+
+const progressBar = document.getElementById("progressBar");
+window.addEventListener("scroll", function() {
+  const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  progressBar.style.width = scrolled + "%";
+});
+
+const miniAvatar = document.getElementById("mini-avatar");
+let lastScrollY = window.scrollY, walkTimeout;
+function updateAvatarPosition() {
+  const scrollY = window.scrollY;
+  const docH = document.body.scrollHeight - window.innerHeight;
+  const progress = docH > 0 ? scrollY / docH : 0;
+  const bottom = 40 + progress * (window.innerHeight - 160);
+  miniAvatar.style.bottom = bottom + "px";
+  if (Math.abs(scrollY - lastScrollY) > 1) {
+    miniAvatar.classList.remove("paused");
+    clearTimeout(walkTimeout);
+    walkTimeout = setTimeout(function() { miniAvatar.classList.add("paused"); }, 150);
+  }
+  lastScrollY = scrollY;
+}
+window.addEventListener("scroll", updateAvatarPosition);
+updateAvatarPosition();
+
+function animateCounter(el, target, suffix) {
+  let start = 0;
+  const step = function(ts) {
+    if (!start) start = ts;
+    const progress = Math.min((ts - start) / 2000, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(ease * target) + (progress === 1 ? suffix : "");
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+let countersDone = false;
+new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting && !countersDone) {
+      countersDone = true;
+      document.querySelectorAll("[data-count]").forEach(function(c) {
+        const target = parseInt(c.dataset.count);
+        animateCounter(c, target, target === 100 ? "%" : "+");
+      });
+    }
+  });
+}).observe(document.getElementById("hero"));
+
+const revealObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add("visible"); });
+}, { threshold: 0.12 });
+document.querySelectorAll(".reveal, .reveal-left, .reveal-right").forEach(function(el) { revealObs.observe(el); });
+
+document.getElementById("download-resume").addEventListener("click", function(e) {
+  e.preventDefault();
+  const text = "KARTHICK RAJA\nPayroll Specialist | HR Shared Services\n+91 95249 96721 | karthikraja569@gmail.com | Tirupur, Tamil Nadu\nLinkedIn: https://www.linkedin.com/in/karthick-raja-514965100\n\nPROFESSIONAL SUMMARY\nResults-driven Payroll and HR Shared Services Specialist with 8+ years of experience supporting UK & Ireland payroll operations, Oracle HCM administration, Time & Labour management, employee lifecycle processes, and global HR support.\n\nEXPERIENCE\nPayroll Specialist - HR Shared Services | Cognizant Technology Solutions | July 2017 - Present\n- UK & Ireland payroll for 1,000+ employees with 100% accuracy\n- Termination and final settlement processing\n- Oracle HCM T&L administration for UK, IRL, Philippines, Poland & Germany\n- System testing (UAT) and sign-off on Oracle HCM updates\n- SOPs maintenance and knowledge transfer\n\nEDUCATION\nBachelor of Computer Applications (BCA) | Hindustan College of Arts and Science, Coimbatore | 2015\n\nTOOLS\nOracle HCM | Oracle Time & Labour | ServiceNow | Microsoft Excel | Microsoft Office Suite\n\nLANGUAGES\nEnglish | Tamil";
+  const blob = new Blob([text], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "Karthick_Raja_Resume.txt";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
